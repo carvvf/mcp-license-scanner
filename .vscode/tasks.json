@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "license-mcp: install",
+      "type": "shell",
+      "command": "STATE_FILE=\"$HOME/.cache/license-mcp/installer-source\"; mkdir -p \"$(dirname \"$STATE_FILE\")\"; if command -v pipx >/dev/null 2>&1; then echo \"Using pipx\"; pipx install --force . && printf \"pipx\\n\" > \"$STATE_FILE\"; elif command -v uv >/dev/null 2>&1; then echo \"pipx not found, using uv\"; uv tool install --force . && printf \"uv\\n\" > \"$STATE_FILE\"; else echo \"Error: neither pipx nor uv is installed.\"; exit 1; fi",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "license-mcp: uninstall",
+      "type": "shell",
+      "command": "STATE_FILE=\"$HOME/.cache/license-mcp/installer-source\"; INSTALLER=\"\"; if [ -f \"$STATE_FILE\" ]; then INSTALLER=\"$(tr -d ' \\t\\r\\n' < \"$STATE_FILE\")\"; fi; if [ \"$INSTALLER\" = \"pipx\" ]; then if ! command -v pipx >/dev/null 2>&1; then echo \"Error: install was done with pipx, but pipx is not available.\"; exit 1; fi; pipx uninstall license-mcp-scanner && rm -f \"$STATE_FILE\"; elif [ \"$INSTALLER\" = \"uv\" ]; then if ! command -v uv >/dev/null 2>&1; then echo \"Error: install was done with uv, but uv is not available.\"; exit 1; fi; uv tool uninstall license-mcp-scanner && rm -f \"$STATE_FILE\"; else echo \"No installer state found, trying available tools.\"; if command -v pipx >/dev/null 2>&1 && pipx uninstall license-mcp-scanner; then rm -f \"$STATE_FILE\"; elif command -v uv >/dev/null 2>&1 && uv tool uninstall license-mcp-scanner; then rm -f \"$STATE_FILE\"; else echo \"Error: package not found or neither pipx nor uv is installed.\"; exit 1; fi; fi",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "license-mcp: clean cache",
+      "type": "shell",
+      "command": "CACHE_DIR=\"$HOME/.cache/license-mcp\"; SCANS_DIR=\"$CACHE_DIR/scans\"; if [ -d \"$SCANS_DIR\" ]; then rm -rf \"$SCANS_DIR\" && echo \"Removed: $SCANS_DIR\"; else echo \"Nothing to clean: $SCANS_DIR not found\"; fi; mkdir -p \"$SCANS_DIR\"",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": []
+    }
+  ]
+}
