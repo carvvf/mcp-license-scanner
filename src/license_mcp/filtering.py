@@ -131,6 +131,13 @@ def tokenize(expr: str) -> set[str]:
     return tokens
 
 
+def is_unknown_license_expr(expr: str) -> bool:
+    tokens = tokenize(expr)
+    if not tokens:
+        return True
+    return tokens.issubset(UNKNOWN_MARKERS)
+
+
 def parse_denylist(value: str) -> set[str]:
     deny_tokens: set[str] = set()
     for raw_item in value.split(","):
@@ -169,7 +176,14 @@ def collect_spdx(data: Any, evidences: dict[tuple[str, str], list[Evidence]]) ->
         spdx_id = str(pkg.get("SPDXID", ""))
         if spdx_id == "SPDXRef-DOCUMENT":
             continue
-        license_expr = pkg.get("licenseConcluded") or pkg.get("licenseDeclared")
+        concluded_expr = normalize_expr(pkg.get("licenseConcluded"))
+        declared_expr = normalize_expr(pkg.get("licenseDeclared"))
+        if concluded_expr and not is_unknown_license_expr(concluded_expr):
+            license_expr = concluded_expr
+        elif declared_expr:
+            license_expr = declared_expr
+        else:
+            license_expr = concluded_expr
         add_evidence(
             evidences,
             source="sbom-spdx",
@@ -663,4 +677,3 @@ def write_filter_outputs(output_dir: Path, result: FilterResult) -> None:
 
 def finding_to_dict(finding: Finding) -> dict[str, Any]:
     return asdict(finding)
-
