@@ -3,13 +3,13 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "license-mcp-scanner"
+name = "mcp-license-scanner"
 version = "0.1.0"
 description = "MCP server for repository and Docker image license scanning."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-authors = [{ name = "license-mcp-scanner contributors" }]
+authors = [{ name = "mcp-license-scanner contributors" }]
 dependencies = [
   "mcp>=1.10.0",
 ]
@@ -28,4 +28,3 @@ package-dir = { "" = "src" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

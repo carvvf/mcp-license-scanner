@@ -1,4 +1,4 @@
-# license-mcp-scanner
+# mcp-license-scanner
 
 MCP server for realistic license scanning across:
 
